@@ -4,6 +4,7 @@ from io import BytesIO
 from django.db.models import Sum
 from django.db.models.expressions import Exists, OuterRef, Value
 from django.http import FileResponse
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from foodgram.settings import BASE_DIR
@@ -81,18 +82,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        try:
-            Favorite.objects.get(
-                user=user, recipe=Recipe.objects.get(id=pk)
-            ).delete()
-        except Exception:
+        recipe = get_object_or_404(Recipe, id=pk)
+        favorite = Favorite.objects.filter(user=user, recipe=recipe)
+        if favorite:
+            favorite.delete()
             return Response(
-                {'detail': 'Ошибка удаления из избранного'},
-                status=status.HTTP_400_BAD_REQUEST,
+                {'detail': 'Рецепт удален из избранного'},
+                status=status.HTTP_204_NO_CONTENT,
             )
         return Response(
-            {'detail': 'Рецепт удален из избранного'},
-            status=status.HTTP_204_NO_CONTENT,
+            {'detail': 'Ошибка удаления из избранного'},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     @action(methods=['post', 'delete'], detail=True)
@@ -105,18 +105,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        try:
-            ShoppingCart.objects.get(
-                user=user, recipe=Recipe.objects.get(id=pk)
-            ).delete()
-        except Exception:
+        recipe = get_object_or_404(Recipe, id=pk)
+        shopping = ShoppingCart.objects.filter(user=user, recipe=recipe)
+        if shopping:
+            shopping.delete()
             return Response(
-                {'detail': 'Ошибка удаления из списка покупок'},
-                status=status.HTTP_400_BAD_REQUEST,
+                {'detail': 'Рецепт удален из списка покупок'},
+                status=status.HTTP_204_NO_CONTENT,
             )
         return Response(
-            {'detail': 'Рецепт удален из списка покупок'},
-            status=status.HTTP_204_NO_CONTENT,
+            {'detail': 'Ошибка удаления из списка покупок'},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     @action(
@@ -126,9 +125,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request):
         ingredients = (
-            RecipeIngredientAmount.objects.filter(
-                recipe__shopping_cart__user=request.user
-            )
+            RecipeIngredientAmount.objects.select_related('recipe')
+            .filter(recipe__shopping_cart__user=request.user)
             .values('ingredient__name', 'ingredient__measurement_unit')
             .order_by('ingredient__name')
             .annotate(total_amount=Sum('amount'))

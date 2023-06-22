@@ -2,7 +2,7 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.core.validators import RegexValidator
-from foodgram.settings import MIN_AMOUNT
+from foodgram.settings import MIN_VALUE
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from users.models import Subscription, User
@@ -27,7 +27,9 @@ class Base64ImageField(serializers.ImageField):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+    is_subscribed = serializers.SerializerMethodField(
+        method_name='get_is_subscribed'
+    )
 
     class Meta:
         model = User
@@ -74,9 +76,13 @@ class UserSubSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
-    is_subscribed = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField(method_name='get_recipes')
+    recipes_count = serializers.SerializerMethodField(
+        method_name='get_recipes_count'
+    )
+    is_subscribed = serializers.SerializerMethodField(
+        method_name='get_is_subscribed'
+    )
 
     class Meta:
         model = User
@@ -187,10 +193,10 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def validate(self, data):
         list_of_ingredients = []
         for ingredient in data.get('ingredient'):
-            if ingredient.get('amount') < MIN_AMOUNT:
+            if ingredient.get('amount') < MIN_VALUE:
                 raise serializers.ValidationError(
                     'Количество ингредиента не должно быть меньше'
-                    f' {MIN_AMOUNT}!'
+                    f' {MIN_VALUE}!'
                 )
             list_of_ingredients.append(ingredient.get('id'))
         if len(set(list_of_ingredients)) != len(list_of_ingredients):
@@ -202,7 +208,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     @staticmethod
     def add_ingredients(recipe, ingredients):
         list_of_ingredients = []
-        print(ingredients)
         for ingredient in ingredients:
             cur_ingredient = get_object_or_404(
                 Ingredient, id=ingredient.get('id')
@@ -245,8 +250,12 @@ class RecipeRetrieveSerializer(serializers.ModelSerializer):
         many=True, source='recipe_ing', read_only=True
     )
     tags = TagSerializer(many=True, read_only=True)
-    is_favorited = serializers.SerializerMethodField()
-    is_in_shopping_cart = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField(
+        method_name='get_is_favorited'
+    )
+    is_in_shopping_cart = serializers.SerializerMethodField(
+        method_name='get_is_in_shopping_cart'
+    )
 
     class Meta:
         model = Recipe

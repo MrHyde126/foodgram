@@ -21,6 +21,7 @@ class IngredientAdmin(admin.ModelAdmin):
 class RecipeIngredientAdmin(admin.StackedInline):
     model = RecipeIngredientAmount
     autocomplete_fields = ('ingredient',)
+    min_num = 1
 
 
 @admin.register(Recipe)

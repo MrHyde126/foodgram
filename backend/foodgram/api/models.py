@@ -1,6 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from foodgram.settings import MIN_AMOUNT
+from foodgram.settings import MIN_VALUE
 from users.models import User
 
 
@@ -12,6 +12,11 @@ class Ingredient(models.Model):
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
         ordering = ('name',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'measurement_unit'], name='unique_ingredient'
+            ),
+        ]
 
     def __str__(self):
         return f'{self.name[:30]}, {self.measurement_unit[:30]}'
@@ -47,13 +52,15 @@ class Recipe(models.Model):
         through='RecipeIngredientAmount',
     )
     tags = models.ManyToManyField(Tag, verbose_name='Теги')
-    cooking_time = models.IntegerField(
+    cooking_time = models.PositiveIntegerField(
         'Время приготовления (в минутах)',
+        default=1,
         validators=[
             MinValueValidator(
-                limit_value=MIN_AMOUNT,
+                limit_value=MIN_VALUE,
                 message=(
-                    f'Время приготовления не может быть меньше {MIN_AMOUNT}'
+                    'Время приготовления не может быть меньше'
+                    f' {MIN_VALUE} мин.'
                 ),
             )
         ],
@@ -81,12 +88,13 @@ class RecipeIngredientAmount(models.Model):
         related_name='recipe_ing',
         on_delete=models.CASCADE,
     )
-    amount = models.IntegerField(
+    amount = models.PositiveIntegerField(
         'Количество',
+        default=1,
         validators=[
             MinValueValidator(
-                limit_value=MIN_AMOUNT,
-                message=f'Количество не может быть меньше {MIN_AMOUNT}',
+                limit_value=MIN_VALUE,
+                message=f'Количество не может быть меньше {MIN_VALUE}',
             )
         ],
     )

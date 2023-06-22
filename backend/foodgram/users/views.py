@@ -40,11 +40,11 @@ class UserViewSet(UserViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        try:
-            Subscription.objects.get(user=user, author=author).delete()
-        except Exception:
-            return Response(
-                {'detail': 'Ошибка отписки'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        subscription = Subscription.objects.filter(user=user, author=author)
+        if subscription:
+            subscription.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {'detail': 'Ошибка отписки'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
