@@ -135,9 +135,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         buffer = BytesIO()
         offset = 700
         pdf = Canvas(buffer)
-        font_path = os.path.join(
-            BASE_DIR.parent.parent, 'static/fonts/arial.ttf'
-        )
+        font_path = os.path.join(BASE_DIR, 'static/fonts/arial.ttf')
         pdfmetrics.registerFont(TTFont('Arial', font_path))
         pdf.setFont('Arial', 18)
         pdf.drawString(150, 750, f'Список покупок для {request.user.username}')

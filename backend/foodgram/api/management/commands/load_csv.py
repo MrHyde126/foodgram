@@ -18,7 +18,9 @@ class Command(BaseCommand):
         with open(file_path, encoding='utf-8') as f:
             reader = csv.reader(f)
             for row in reader:
-                ingredient = Ingredient(name=row[0], measurement_unit=row[1])
-                ingredient.save()
+                try:
+                    Ingredient(name=row[0], measurement_unit=row[1]).save()
+                except Exception as exc:
+                    return logging.error(exc)
 
-        logging.info('Файл загружен.')
+        return logging.info('Файл загружен.')

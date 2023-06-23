@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get(
     ),
 )
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -71,7 +71,7 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_DB', default='postgres'),
         'USER': os.environ.get('POSTGRES_USER', default='postgres'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', default='postgres'),
-        'HOST': os.environ.get('DB_HOST', default='localhost'),
+        'HOST': os.environ.get('DB_HOST', default='db'),
         'PORT': os.environ.get('DB_PORT', default='5432'),
     }
 }
@@ -107,11 +107,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR.parent.parent, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR.parent.parent, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -138,6 +138,8 @@ DJOSER = {
 }
 
 MIN_VALUE = 1
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost']
 
 LOGGING = {
     "version": 1,

@@ -11,6 +11,7 @@ djoser 2.2.0
 requests 2.31.0
 reportlab 4.0.4
 PostgreSQL 15.3
+gunicorn 20.1.0
 nginx
 Docker
 ```
