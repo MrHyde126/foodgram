@@ -21,6 +21,6 @@ class Command(BaseCommand):
                 try:
                     Ingredient(name=row[0], measurement_unit=row[1]).save()
                 except Exception as exc:
-                    return logging.error(exc)
+                    logging.error(exc)
 
         return logging.info('Файл загружен.')
