@@ -132,7 +132,10 @@ DJOSER = {
 
 MIN_VALUE = 1
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = [
+    'http://51.250.16.24',
+    'http://mrhyde-foodgram.sytes.net',
+]
 
 LOGGING = {
     "version": 1,
