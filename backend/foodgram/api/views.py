@@ -3,7 +3,7 @@ from io import BytesIO
 
 from django.db.models import Sum
 from django.db.models.expressions import Exists, OuterRef, Value
-from django.http import FileResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
@@ -158,8 +158,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         pdf.drawString(130, 50, f'Файл сгенерирован Foodgram {today:%d.%m.%Y}')
         pdf.save()
         buffer.seek(0)
-        # filename = f'{slugify(request.user.username)}\'s_shopping_list.pdf'
-        return FileResponse(buffer, as_attachment=True)
+        response = HttpResponse(buffer, content_type='application/json')
+        response['Content-Disposition'] = (
+            'attachment;'
+            f' filename={request.user.username}\'s_shopping_list.pdf'
+        )
+        return response
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
