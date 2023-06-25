@@ -159,12 +159,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         pdf.drawString(130, 50, f'Файл сгенерирован Foodgram {today:%d.%m.%Y}')
         pdf.save()
         buffer.seek(0)
-        username = slugify(request.user.username)
-        return FileResponse(
-            buffer,
-            as_attachment=True,
-            filename=f'{username}\'s_shopping_list.pdf',
-        )
+        filename = f'{slugify(request.user.username)}\'s_shopping_list.pdf'
+        return FileResponse(buffer, as_attachment=True, filename=filename)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
