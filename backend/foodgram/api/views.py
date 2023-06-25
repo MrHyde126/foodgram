@@ -158,9 +158,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         pdf.drawString(130, 50, f'Файл сгенерирован Foodgram {today:%d.%m.%Y}')
         pdf.save()
         buffer.seek(0)
-        return FileResponse(
-            open(buffer, 'rb'), as_attachment=True, filename="hello.pdf"
+        response = FileResponse(
+            buffer, as_attachment=True, filename="hello.pdf"
         )
+        response[
+            'Content-Disposition'
+        ] = f'attachment; filename={request.user.username}\'s_shopping_list'
+        response['Access-Control-Expose-Headers'] = 'Content-Disposition'
+        return response
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
