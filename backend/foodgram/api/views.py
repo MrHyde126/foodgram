@@ -3,7 +3,7 @@ from io import BytesIO
 
 from django.db.models import Sum
 from django.db.models.expressions import Exists, OuterRef, Value
-from django.http import FileResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
@@ -132,9 +132,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .annotate(total_amount=Sum('amount'))
         )
         today = timezone.now().today()
-        buffer = BytesIO()
+        # buffer = BytesIO()
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="file.pdf"'
         offset = 700
-        pdf = Canvas(buffer)
+        pdf = Canvas(response)
         font_path = os.path.join(BASE_DIR, 'fonts/arial.ttf')
         pdfmetrics.registerFont(TTFont('Arial', font_path))
         pdf.setFont('Arial', 18)
@@ -157,14 +159,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 offset = 750
         pdf.drawString(130, 50, f'Файл сгенерирован Foodgram {today:%d.%m.%Y}')
         pdf.save()
-        buffer.seek(0)
-        response = FileResponse(
-            buffer, as_attachment=True, filename="hello.pdf"
-        )
-        response[
-            'Content-Disposition'
-        ] = f'attachment; filename={request.user.username}\'s_shopping_list'
-        response['Access-Control-Expose-Headers'] = 'Content-Disposition'
+        # buffer.seek(0)
+        # response = FileResponse(
+        #     buffer, as_attachment=True, filename="hello.pdf"
+        # )
+        # response[
+        #     'Content-Disposition'
+        # ] = f'attachment; filename={request.user.username}\'s_shopping_list'
+        # response['Access-Control-Expose-Headers'] = 'Content-Disposition'
         return response
 
 
