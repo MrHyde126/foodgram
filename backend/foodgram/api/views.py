@@ -159,10 +159,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         pdf.save()
         buffer.seek(0)
         response = HttpResponse(buffer, content_type='application/json')
-        response['Content-Disposition'] = (
-            'attachment;'
-            f' filename={request.user.username}\'s_shopping_list.pdf'
-        )
+        response[
+            'Content-Disposition'
+        ] = f'attachment; filename={request.user.username}_shopping_list.pdf'
         return response
 
 
