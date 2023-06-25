@@ -6,6 +6,7 @@ from django.db.models.expressions import Exists, OuterRef, Value
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.utils.text import slugify
 from django_filters.rest_framework import DjangoFilterBackend
 from foodgram.settings import BASE_DIR
 from reportlab.pdfbase import pdfmetrics
@@ -158,10 +159,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         pdf.drawString(130, 50, f'Файл сгенерирован Foodgram {today:%d.%m.%Y}')
         pdf.save()
         buffer.seek(0)
+        username = slugify(request.user.username)
         return FileResponse(
             buffer,
             as_attachment=True,
-            filename=f'{request.user.username}\'s_shopping_list.pdf',
+            filename=f'{username}\'s_shopping_list.pdf',
         )
 
 
