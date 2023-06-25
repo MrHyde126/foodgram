@@ -1,6 +1,6 @@
+from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 from django.db import models
-from django_extensions.validators import HexValidator
 from foodgram.settings import MIN_VALUE
 from users.models import User
 
@@ -25,12 +25,7 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     name = models.CharField('Название', max_length=200, unique=True)
-    color = models.CharField(
-        'Цвет в HEX',
-        max_length=7,
-        unique=True,
-        validators=[HexValidator(max_length=7)],
-    )
+    color = ColorField('Цвет в HEX', unique=True)
     slug = models.SlugField('Уникальный слаг', max_length=200, unique=True)
 
     class Meta:
