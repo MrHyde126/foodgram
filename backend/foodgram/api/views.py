@@ -159,7 +159,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         pdf.save()
         buffer.seek(0)
         # filename = f'{slugify(request.user.username)}\'s_shopping_list.pdf'
-        return FileResponse(buffer, as_attachment=True, filename='123.pdf')
+        return FileResponse(buffer, as_attachment=True)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
