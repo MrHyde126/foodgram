@@ -61,7 +61,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-          sudo docker image prune -f
+          sudo docker image prune -af
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_back:v1
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_front:latest
           sudo docker compose stop
