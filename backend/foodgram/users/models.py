@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from .validators import check_login
@@ -43,11 +44,11 @@ class Subscription(models.Model):
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         ordering = ('user__username',)
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'], name='unique_subscription'
-            )
-        ]
+        unique_together = ('user', 'author')
+
+    def clean(self):
+        if self.user == self.author:
+            raise ValidationError('Нельзя подписаться на себя!')
 
     def __str__(self):
         return f'{self.user.username} подписан на {self.author.username}'

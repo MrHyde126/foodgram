@@ -189,19 +189,30 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time',
         )
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=Recipe.objects.all(),
+                fields=('author', 'name'),
+                message='У пользователя уже есть такой рецепт!',
+            ),
+        ]
 
     def validate(self, data):
         list_of_ingredients = []
         for ingredient in data.get('ingredient'):
             if ingredient.get('amount') < MIN_VALUE:
                 raise serializers.ValidationError(
-                    'Количество ингредиента не должно быть меньше'
-                    f' {MIN_VALUE}!'
+                    {
+                        'id': (
+                            'Количество ингредиента не должно быть меньше'
+                            f' {MIN_VALUE}!'
+                        )
+                    }
                 )
             list_of_ingredients.append(ingredient.get('id'))
         if len(set(list_of_ingredients)) != len(list_of_ingredients):
             raise serializers.ValidationError(
-                'В рецепте не должно быть повторяющихся ингредиентов!'
+                {'id': 'В рецепте не должно быть повторяющихся ингредиентов!'}
             )
         return data
 
