@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.forms import ValidationError
 from django.forms.models import BaseInlineFormSet
 
 from .models import (
@@ -20,22 +21,26 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class RequiredInlineFormSet(BaseInlineFormSet):
-    def _construct_form(self, i, **kwargs):
-        form = super(RequiredInlineFormSet, self)._construct_form(i, **kwargs)
-        form.empty_permitted = False
-        return form
+    def clean(self):
+        if any(self.errors):
+            return
+        if not self.cleaned_data:
+            raise ValidationError(
+                'Должно присутствовать хотя бы одно значение!'
+            )
 
 
-class RecipeIngredientAdmin(admin.StackedInline):
+class IngredientInline(admin.StackedInline):
     model = RecipeIngredientAmount
     autocomplete_fields = ('ingredient',)
     min_num = 1
+    extra = 1
     formset = RequiredInlineFormSet
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    inlines = (RecipeIngredientAdmin,)
+    inlines = (IngredientInline,)
     list_display = ('name', 'author', 'fav_recipe_count')
     search_fields = ('name', 'tags')
     list_filter = ('author', 'name', 'tags')
