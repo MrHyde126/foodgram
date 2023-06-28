@@ -7,6 +7,7 @@ from .models import Subscription, User
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email')
     search_fields = ('email', 'username')
+    list_filter = ('email', 'username')
     list_per_page = 30
 
 
