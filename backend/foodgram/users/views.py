@@ -33,7 +33,6 @@ class UserViewSet(UserViewSet):
         user = request.user
         author = get_object_or_404(User, id=id)
         if request.method == 'POST':
-            # Subscription.clean(user=user, author=author)
             serializer = UserSubSerializer(
                 data={'user': user.id, 'author': author.id},
                 context={'request': request},

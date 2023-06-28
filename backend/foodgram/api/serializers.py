@@ -192,7 +192,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=Recipe.objects.all(),
-                fields=('author', 'recipe'),
+                fields=('author', 'name'),
                 message='У пользователя уже есть такой рецепт!',
             ),
         ]
