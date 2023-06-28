@@ -30,6 +30,7 @@ class UserViewSet(UserViewSet):
 
     @action(methods=['post', 'delete'], detail=True)
     def subscribe(self, request, id):
+        Subscription.clean()
         user = request.user
         author = get_object_or_404(User, id=id)
         if request.method == 'POST':
@@ -37,7 +38,6 @@ class UserViewSet(UserViewSet):
                 data={'user': user.id, 'author': author.id},
                 context={'request': request},
             )
-            Subscription.full_clean()
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
