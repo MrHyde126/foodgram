@@ -203,7 +203,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             if ingredient.get('amount') < MIN_VALUE:
                 raise serializers.ValidationError(
                     {
-                        'id': [
+                        'ingredient': [
                             'Количество ингредиента не должно быть меньше'
                             f' {MIN_VALUE}!'
                         ]
@@ -213,7 +213,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         if len(set(list_of_ingredients)) != len(list_of_ingredients):
             raise serializers.ValidationError(
                 {
-                    'id': [
+                    'ingredient': [
                         'В рецепте не должно быть повторяющихся ингредиентов!'
                     ]
                 }
