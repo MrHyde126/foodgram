@@ -37,6 +37,7 @@ class UserViewSet(UserViewSet):
                 data={'user': user.id, 'author': author.id},
                 context={'request': request},
             )
+            Subscription.full_clean()
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
