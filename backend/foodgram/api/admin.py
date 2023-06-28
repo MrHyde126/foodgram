@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.forms.models import BaseInlineFormSet
 
 from .models import (
     Favorite,
@@ -18,10 +19,18 @@ class IngredientAdmin(admin.ModelAdmin):
     list_per_page = 30
 
 
+class RequiredInlineFormSet(BaseInlineFormSet):
+    def _construct_form(self, i, **kwargs):
+        form = super(RequiredInlineFormSet, self)._construct_form(i, **kwargs)
+        form.empty_permitted = False
+        return form
+
+
 class RecipeIngredientAdmin(admin.StackedInline):
     model = RecipeIngredientAmount
     autocomplete_fields = ('ingredient',)
     min_num = 1
+    formset = RequiredInlineFormSet
 
 
 @admin.register(Recipe)
