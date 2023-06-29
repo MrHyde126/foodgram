@@ -55,13 +55,6 @@ const SignUp = ({ onSignUp }) => {
           required
           onChange={handleChange}
         />
-        <Input
-          label='Подтверждение пароля'
-          type='password'
-          name='confirm_password'
-          required
-          onChange={handleChange}
-        />
         <Button
           modifier='style_dark-blue'
           type='submit'

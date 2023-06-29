@@ -30,7 +30,6 @@ class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(
         method_name='get_is_subscribed'
     )
-    confirm_password = serializers.CharField()
 
     class Meta:
         model = User
@@ -50,13 +49,6 @@ class UserSerializer(serializers.ModelSerializer):
             user.is_authenticated
             and Subscription.objects.filter(user=user, author=author).exists()
         )
-
-    def validate(self, data):
-        password = data.get('password')
-        confirm_password = data.pop('confirm_password')
-        if password != confirm_password:
-            raise serializers.ValidationError('Введенные пароли не совпадают!')
-        return data
 
 
 class UserSubSerializer(serializers.ModelSerializer):
