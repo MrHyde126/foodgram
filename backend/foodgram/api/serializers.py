@@ -30,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(
         method_name='get_is_subscribed'
     )
+    confirm_password = serializers.CharField()
 
     class Meta:
         model = User
@@ -67,6 +68,10 @@ class UserSubSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Невозможно подписаться на себя!'
             )
+        password = data.get('password')
+        confirm_password = data.pop('confirm_password')
+        if password != confirm_password:
+            raise serializers.ValidationError('Введенные пароли не совпадают!')
         return data
 
     def to_representation(self, instance):
