@@ -44,6 +44,16 @@ class IngredientInline(admin.StackedInline):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientInline,)
+    fields = (
+        'author',
+        'name',
+        'image',
+        'text',
+        'tags',
+        'cooking_time',
+        'fav_recipe_count',
+    )
+    readonly_fields = ('fav_recipe_count',)
     list_display = ('name', 'author', 'fav_recipe_count')
     search_fields = ('name', 'tags')
     list_filter = ('author', 'name', 'tags')
