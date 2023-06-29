@@ -24,7 +24,10 @@ class RequiredInlineFormSet(BaseInlineFormSet):
     def clean(self):
         if any(self.errors):
             return
-        if not self.cleaned_data:
+        if not any(
+            cleaned_data and not cleaned_data.get('DELETE', False)
+            for cleaned_data in self.cleaned_data
+        ):
             raise ValidationError(
                 'Должно присутствовать хотя бы одно значение!'
             )
