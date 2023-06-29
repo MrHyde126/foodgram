@@ -50,6 +50,13 @@ class UserSerializer(serializers.ModelSerializer):
             and Subscription.objects.filter(user=user, author=author).exists()
         )
 
+    def validate(self, data):
+        password = data.get('password')
+        confirm_password = data.pop('confirm_password')
+        if password != confirm_password:
+            raise serializers.ValidationError('Введенные пароли не совпадают!')
+        return data
+
 
 class UserSubSerializer(serializers.ModelSerializer):
     class Meta:
@@ -68,10 +75,6 @@ class UserSubSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Невозможно подписаться на себя!'
             )
-        password = data.get('password')
-        confirm_password = data.pop('confirm_password')
-        if password != confirm_password:
-            raise serializers.ValidationError('Введенные пароли не совпадают!')
         return data
 
     def to_representation(self, instance):
