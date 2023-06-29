@@ -41,7 +41,6 @@ const SignUp = ({ onSignUp }) => {
           required
           onChange={handleChange}
         />
-
         <Input
           label='Адрес электронной почты'
           name='email'
