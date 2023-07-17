@@ -19,7 +19,7 @@ Docker
 ### Для локального запуска проекта нужно:
 - Клонировать репозиторий 
   ```
-  git clone git@github.com:MrHyde126/foodgram-project-react.git
+  git clone git@github.com:MrHyde126/foodgram.git
   ```
 - Cоздать и активировать виртуальное окружение
   ```
